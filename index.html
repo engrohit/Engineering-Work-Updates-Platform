@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Engineering Work Updates Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- External Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Engineering Work Updates Platform</h1>
+            <p>Streamlined collaboration for engineering teams</p>
+            <div class="nav">
+                <button class="nav-btn active" onclick="showSection('dashboard')">Dashboard</button>
+                <button class="nav-btn" onclick="showSection('form')">Add Update</button>
+                <button class="nav-btn" onclick="showSection('updates')">View Updates</button>
+                <button class="nav-btn" onclick="showSection('siteSearch')">Search Site ID</button>
+            </div>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <h2>Dashboard Overview</h2>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalUpdates">0</div>
+                    <div class="stat-label">Total Updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeProjects">0</div>
+                    <div class="stat-label">Active Projects</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="todayUpdates">0</div>
+                    <div class="stat-label">Today's Updates</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="pendingItems">0</div>
+                    <div class="stat-label">Pending Items</div>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="filter-group">
+                    <label for="dashboardDateFilter">Filter by Date:</label>
+                    <input type="date" id="dashboardDateFilter" class="form-control" onchange="filterDashboard()">
+                </div>
+                <div class="filter-group">
+                    <label for="dashboardProjectFilter">Filter by Project:</label>
+                    <select id="dashboardProjectFilter" class="form-control" onchange="filterDashboard()">
+                        <option value="">All Projects</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="dashboardStatusFilter">Filter by Status:</label>
+                    <select id="dashboardStatusFilter" class="form-control" onchange="filterDashboard()">
+                        <option value="">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="On Hold">On Hold</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="updates-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Project</th>
+                            <th>Site Name</th>
+                            <th>Activity</th>
+                            <th>Status</th>
+                            <th>Engineer</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dashboardTable">
+                        <tr>
+                            <td colspan="6" class="no-updates">No updates available. Add your first update to get started!</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Form Section -->
+        <div id="form" class="section">
+            <h2>Add New Update</h2>
+            <div id="alertContainer"></div>
+            
+            <form id="updateForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="timestamp">Timestamp *</label>
+                        <input type="datetime-local" id="timestamp" class="form-control required" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceCode">Resource Code *</label>
+                        <select id="resourceCode" class="form-control required" required onchange="updateResourceName()">
+                            <option value="">Select Resource Code</option>
+                            <option value="HR02">HR02</option>
+                            <option value="HR03">HR03</option>
+                            <option value="HR04">HR04</option>
+                            <option value="HR05">HR05</option>
+                            <option value="HR06">HR06</option>
+                            <option value="HR07">HR07</option>
+                            <option value="HR08">HR08</option>
+                            <option value="HR 09">HR 09</option>
+                            <option value="HR10">HR10</option>
+                            <option value="HR12">HR12</option>
+                            <option value="HR13">HR13</option>
+                            <option value="HR14">HR14</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="resourceName">Resource Name *</label>
+                        <select id="resourceName" class="form-control required" required onchange="updateResourceCode()">
+                            <option value="">Select Resource Name</option>
+                            <option value="Rohit Rajput">Rohit Rajput</option>
+                            <option value="Sanjay Kumar">Sanjay Kumar</option>
+                            <option value="Maman">Maman</option>
+                            <option value="Monu">Monu</option>
+                            <option value="Sukrampal">Sukrampal</option>
+                            <option value="Rohit Kumar Chaudhary">Rohit Kumar Chaudhary</option>
+                            <option value="Navneet Kumar">Navneet Kumar</option>
+                            <option value="Anoop Kumar">Anoop Kumar</option>
+                            <option value="Suresh Sharma">Suresh Sharma</option>
+                            <option value="Anil Kumar">Anil Kumar</option>
+                            <option value="Pawn Gupta">Pawn Gupta</option>
+                            <option value="Sumit Rana">Sumit Rana</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mediaTestPlan">Media Test Plan</label>
+                        <input type="text" id="mediaTestPlan" class="form-control" placeholder="Test plan reference">
+                    </div>
+                    <div class="form-group">
+                        <label for="date">Date *</label>
+                        <input type="date" id="date" class="form-control required" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="circle">Circle</label>
+                        <input type="text" id="circle" class="form-control" placeholder="e.g., Delhi, Mumbai">
+                    </div>
+                    <div class="form-group">
+                        <label for="location">Location *</label>
+                        <input type="text" id="location" class="form-control required" placeholder="Site location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ipId">IP ID</label>
+                        <input type="text" id="ipId" class="form-control" placeholder="IP identifier">
+                    </div>
+                    <div class="form-group">
+                        <label for="siteName">Site Name *</label>
+                        <div style="position: relative;">
+                            <input type="text" id="siteName" class="form-control required" placeholder="Site name or search from Site ID database" required>
+                            <button type="button" class="site-lookup-btn" onclick="openSiteLookup()" title="Search Site Database">🔍</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mediaType">Media Type</label>
+                        <select id="mediaType" class="form-control">
+                            <option value="">Select Media Type</option>
+                            <option value="2G">2G</option>
+                            <option value="3G">3G</option>
+                            <option value="4G">4G</option>
+                            <option value="5G">5G</option>
+                            <option value="VoLTE">VoLTE</option>
+                            <option value="WiFi">WiFi</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="mediaRemarks">Media Remarks</label>
+                        <textarea id="mediaRemarks" class="form-control" rows="3" placeholder="Additional media notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="mediaStatus">Media Status</label>
+                        <select id="mediaStatus" class="form-control">
+                            <option value="">Select Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Inactive">Inactive</option>
+                            <option value="Under Maintenance">Under Maintenance</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="activity">Activity *</label>
+                        <input type="text" id="activity" class="form-control required" placeholder="Current activity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="activityStatus">Activity Status *</label>
+                        <select id="activityStatus" class="form-control required" required>
+                            <option value="">Select Status</option>
+                            <option value="Active">Active</option>
+                            <option value="Pending">Pending</option>
+                            <option value="Completed">Completed</option>
+                            <option value="On Hold">On Hold</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="remarks">Remarks</label>
+                        <textarea id="remarks" class="form-control" rows="3" placeholder="Additional remarks or notes"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="bands">Bands</label>
+                        <input type="text" id="bands" class="form-control" placeholder="e.g., Band 1, Band 3, Band 40">
+                    </div>
+                    <div class="form-group">
+                        <label for="sectors">Sectors</label>
+                        <input type="text" id="sectors" class="form-control" placeholder="e.g., Sector 1, Sector 2">
+                    </div>
+                    <div class="form-group">
+                        <label for="updatedActivity">Updated Activity</label>
+                        <textarea id="updatedActivity" class="form-control" rows="3" placeholder="Updated activity details"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="projectCategory">Project Category *</label>
+                        <select id="projectCategory" class="form-control required" required>
+                            <option value="">Select Category</option>
+                            <option value="Network Optimization">Network Optimization</option>
+                            <option value="Site Installation">Site Installation</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Testing">Testing</option>
+                            <option value="Troubleshooting">Troubleshooting</option>
+                            <option value="Upgrade">Upgrade</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary">
+                    <span id="submitText">Submit Update</span>
+                    <span id="submitLoader" class="loading" style="display: none;"></span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Site Search Section -->
+        <div id="siteSearch" class="section">
+            <h2>Search Site ID</h2>
+            
+            <div class="site-search-container">
+                <div class="search-section">
+                    <div class="file-upload-section">
+                        <div class="upload-area">
+                            <div class="upload-content">
+                                <div class="upload-icon">📊</div>
+                                <h4>Upload Latest Site Data Excel File</h4>
+                                <p>Drag & drop your Excel file here or click to browse</p>
+                                <input type="file" id="siteFileInput" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleSiteFileUpload(event)">
+                                <button class="upload-btn" onclick="document.getElementById('siteFileInput').click()">Choose File</button>
+                            </div>
+                        </div>
+                        <div class="file-status">
+                            <div id="uploadStatus" class="upload-status">No file uploaded - using default site database</div>
+                            <div id="fileInfo" class="file-info" style="display: none;"></div>
+                            <button id="clearFileBtn" class="btn-secondary" onclick="clearUploadedFile()" style="display: none;">Use Default Database</button>
+                        </div>
+                    </div>
+
+                    <div class="search-input-group">
+                        <input type="text" id="siteSearchInput" class="search-box" placeholder="Enter Site ID (e.g., DL001, MH002, BG003)" onkeyup="searchSites()" style="max-width: 100%; margin-bottom: 15px;">
+                        <div class="search-filters">
+                            <div class="filter-group">
+                                <label for="circleFilter">Filter by Circle:</label>
+                                <select id="circleFilter" class="form-control" onchange="searchSites()">
+                                    <option value="">All Circles</option>
+                                    <option value="Delhi">Delhi</option>
+                                    <option value="Mumbai">Mumbai</option>
+                                    <option value="Bangalore">Bangalore</option>
+                                    <option value="Chennai">Chennai</option>
+                                    <option value="Kolkata">Kolkata</option>
+                                    <option value="Hyderabad">Hyderabad</option>
+                                    <option value="Pune">Pune</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="siteTypeFilter">Filter by Type:</label>
+                                <select id="siteTypeFilter" class="form-control" onchange="searchSites()">
+                                    <option value="">All Types</option>
+                                    <option value="Macro">Macro</option>
+                                    <option value="Micro">Micro</option>
+                                    <option value="Small Cell">Small Cell</option>
+                                    <option value="Indoor">Indoor</option>
+                                </select>
+                            </div>
+                            <div class="filter-group">
+                                <label for="technologyFilter">Filter by Technology:</label>
+                                <select id="technologyFilter" class="form-control" onchange="searchSites()">
+                                    <option value="">All Technologies</option>
+                                    <option value="2G">2G</option>
+                                    <option value="3G">3G</option>
+                                    <option value="4G">4G</option>
+                                    <option value="5G">5G</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="site-results">
+                    <div id="siteResultsCount" class="results-count">Search for a site ID to see results</div>
+                    <div id="siteResultsContainer" class="sites-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Updates Section -->
+        <div id="updates" class="section">
+            <h2>All Updates</h2>
+            
+            <div class="filters">
+                <input type="text" id="searchBox" class="search-box" placeholder="Search updates..." onkeyup="searchUpdates()">
+                <div class="filter-group">
+                    <label for="dateFilter">Date:</label>
+                    <input type="date" id="dateFilter" class="form-control" onchange="filterUpdates()">
+                </div>
+                <div class="filter-group">
+                    <label for="projectFilter">Project:</label>
+                    <select id="projectFilter" class="form-control" onchange="filterUpdates()">
+                        <option value="">All Projects</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="statusFilter">Status:</label>
+                    <select id="statusFilter" class="form-control" onchange="filterUpdates()">
+                        <option value="">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                        <option value="On Hold">On Hold</option>
+                    </select>
+                </div>
+                <button class="export-btn" onclick="exportToCSV()">Export CSV</button>
+            </div>
+
+            <div class="updates-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Resource</th>
+                            <th>Site Name</th>
+                            <th>Location</th>
+                            <th>Activity</th>
+                            <th>Status</th>
+                            <th>Media Type</th>
+                            <th>Project Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="updatesTable
