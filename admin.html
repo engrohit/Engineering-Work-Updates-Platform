@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Engineering Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Admin Dashboard</h1>
+            <div class="header-info">
+                <span id="groupInfo" class="group-info"></span>
+                <span id="adminInfo" class="admin-info"></span>
+                <button class="btn-secondary" onclick="logout()">Logout</button>
+            </div>
+            <div class="nav">
+                <button class="nav-btn active" onclick="showSection('members')">Manage Members</button>
+                <button class="nav-btn" onclick="showSection('groupData')">Group Data</button>
+                <button class="nav-btn" onclick="showSection('analytics')">Analytics</button>
+                <button class="nav-btn" onclick="showSection('settings')">Settings</button>
+            </div>
+        </div>
+
+        <!-- Members Management Section -->
+        <div id="members" class="section active">
+            <h2>Group Members Management</h2>
+            
+            <div class="action-bar">
+                <button class="btn-primary" onclick="showAddMemberModal()">
+                    <span>➕</span> Add New Member
+                </button>
+                <div class="member-stats">
+                    <span class="stat-item">
+                        <strong id="totalMembers">0</strong> Total Members
+                    </span>
+                    <span class="stat-item">
+                        <strong id="activeMembers">0</strong> Active
+                    </span>
+                </div>
+            </div>
+
+            <div id="memberAlert" class="alert-container"></div>
+
+            <div class="members-grid" id="membersGrid">
+                <!-- Members will be loaded here -->
+            </div>
+        </div>
+
+        <!-- Group Data Section -->
+        <div id="groupData" class="section">
+            <h2>Group Work Updates</h2>
+            
+            <div class="data-filters">
+                <div class="filter-group">
+                    <label for="memberFilter">Filter by Member:</label>
+                    <select id="memberFilter" class="form-control" onchange="filterGroupData()">
+                        <option value="">All Members</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="dateRangeFilter">Date Range:</label>
+                    <select id="dateRangeFilter" class="form-control" onchange="filterGroupData()">
+                        <option value="all">All Time</option>
+                        <option value="today">Today</option>
+                        <option value="week">This Week</option>
+                        <option value="month">This Month</option>
+                    </select>
+                </div>
+                <button class="export-btn" onclick="exportGroupData()">Export Data</button>
+            </div>
+
+            <div class="updates-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Member</th>
+                            <th>Site Name</th>
+                            <th>Activity</th>
+                            <th>Status</th>
+                            <th>Project Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="groupDataTable">
+                        <tr>
+                            <td colspan="7" class="no-updates">No updates available from group members</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div id="analytics" class="section">
+            <h2>Group Analytics</h2>
+            
+            <div class="analytics-grid">
+                <div class="analytics-card">
+                    <h3>Work Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="workDistributionChart" width="300" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Project Status Overview</h3>
+                    <div class="status-stats">
+                        <div class="status-item">
+                            <span class="status-badge status-completed">Completed</span>
+                            <strong id="completedCount">0</strong>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-badge status-active">Active</span>
+                            <strong id="activeCount">0</strong>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-badge status-pending">Pending</span>
+                            <strong id="pendingCount">0</strong>
+                        </div>
+                        <div class="status-item">
+                            <span class="status-badge status-on-hold">On Hold</span>
+                            <strong id="onHoldCount">0</strong>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Monthly Activity</h3>
+                    <div id="monthlyActivity" class="activity-chart">
+                        <!-- Monthly activity chart will be rendered here -->
+                    </div>
+                </div>
+                
+                <div class="analytics-card">
+                    <h3>Top Performers</h3>
+                    <div id="topPerformers" class="performers-list">
+                        <!-- Top performers will be listed here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings" class="section">
+            <h2>Group Settings</h2>
+            
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h3>Group Information</h3>
+                    <form id="groupSettingsForm" onsubmit="updateGroupSettings(event)">
+                        <div class="form-group">
+                            <label for="settingsGroupName">Group Name</label>
+                            <input type="text" id="settingsGroupName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="settingsGroupDescription">Description</label>
+                            <textarea id="settingsGroupDescription" class="form-control" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Update Group Info</button>
+                    </form>
+                </div>
+                
+                <div class="settings-card">
+                    <h3>Admin Account</h3>
+                    <form id="adminSettingsForm" onsubmit="updateAdminSettings(event)">
+                        <div class="form-group">
+                            <label for="settingsAdminName">Admin Name</label>
+                            <input type="text" id="settingsAdminName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="settingsAdminEmail">Admin Email</label>
+                            <input type="email" id="settingsAdminEmail" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="settingsAdminPassword">New Password (leave blank to keep current)</label>
+                            <input type="password" id="settingsAdminPassword" class="form-control">
+                        </div>
+                        <button type="submit" class="btn-primary">Update Admin Info</button>
+                    </form>
+                </div>
+                
+                <div class="settings-card">
+                    <h3>Data Management</h3>
+                    <div class="data-actions">
+                        <button class="btn-secondary" onclick="backupGroupData()">Backup Group Data</button>
+                        <button class="btn-secondary" onclick="showImportModal()">Import Data</button>
+                        <button class="btn-danger" onclick="confirmDataReset()">Reset All Data</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Member</h3>
+                <button class="modal-close" onclick="hideAddMemberModal()">&times;</button>
+            </div>
+            <form id="addMemberForm" onsubmit="addMember(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="memberName">Full Name *</label>
+                        <input type="text" id="memberName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberUsername">Username *</label>
+                        <input type="text" id="memberUsername" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberPassword">Password *</label>
+                        <input type="password" id="memberPassword" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberResourceCode">Resource Code</label>
+                        <select id="memberResourceCode" class="form-control">
+                            <option value="">Select Code</option>
+                            <option value="HR02">HR02</option>
+                            <option value="HR03">HR03</option>
+                            <option value="HR04">HR04</option>
+                            <option value="HR05">HR05</option>
+                            <option value="HR06">HR06</option>
+                            <option value="HR07">HR07</option>
+                            <option value="HR08">HR08</option>
+                            <option value="HR 09">HR 09</option>
+                            <option value="HR10">HR10</option>
+                            <option value="HR12">HR12</option>
+                            <option value="HR13">HR13</option>
+                            <option value="HR14">HR14</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberRole">Role</label>
+                        <select id="memberRole" class="form-control">
+                            <option value="Network Engineer">Network Engineer</option>
+                            <option value="Senior Engineer">Senior Engineer</option>
+                            <option value="Site Engineer">Site Engineer</option>
+                            <option value="Field Engineer">Field Engineer</option>
+                            <option value="Team Lead">Team Lead</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberEmail">Email</label>
+                        <input type="email" id="memberEmail" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hideAddMemberModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Edit Member Modal -->
+    <div id="editMemberModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Edit Member</h3>
+                <button class="modal-close" onclick="hideEditMemberModal()">&times;</button>
+            </div>
+            <form id="editMemberForm" onsubmit="updateMember(event)">
+                <input type="hidden" id="editMemberId">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editMemberName">Full Name *</label>
+                        <input type="text" id="editMemberName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editMemberUsername">Username *</label>
+                        <input type="text" id="editMemberUsername" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editMemberPassword">New Password (leave blank to keep current)</label>
+                        <input type="password" id="editMemberPassword" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="editMemberResourceCode">Resource Code</label>
+                        <select id="editMemberResourceCode" class="form-control">
+                            <option value="">Select Code</option>
+                            <option value="HR02">HR02</option>
+                            <option value="HR03">HR03</option>
+                            <option value="HR04">HR04</option>
+                            <option value="HR05">HR05</option>
+                            <option value="HR06">HR06</option>
+                            <option value="HR07">HR07</option>
+                            <option value="HR08">HR08</option>
+                            <option value="HR 09">HR 09</option>
+                            <option value="HR10">HR10</option>
+                            <option value="HR12">HR12</option>
+                            <option value="HR13">HR13</option>
+                            <option value="HR14">HR14</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editMemberRole">Role</label>
+                        <select id="editMemberRole" class="form-control">
+                            <option value="Network Engineer">Network Engineer</option>
+                            <option value="Senior Engineer">Senior Engineer</option>
+                            <option value="Site Engineer">Site Engineer</option>
+                            <option value="Field Engineer">Field Engineer</option>
+                            <option value="Team Lead">Team Lead</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editMemberEmail">Email</label>
+                        <input type="email" id="editMemberEmail" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="hideEditMemberModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Update Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+</html>
