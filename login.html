@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Engineering Platform</title>
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Engineering Work Platform</h1>
+                <p>Collaborative engineering management system</p>
+            </div>
+
+            <!-- Login Form -->
+            <div id="loginForm" class="auth-form active">
+                <h2>Sign In</h2>
+                <div id="loginAlert" class="alert-container"></div>
+                
+                <form onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="loginUsername">Username</label>
+                        <input type="text" id="loginUsername" class="form-control" placeholder="Enter your username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary full-width">
+                        <span id="loginText">Sign In</span>
+                        <span id="loginLoader" class="loading" style="display: none;"></span>
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    <a href="#" onclick="showAdminLogin()">Admin Login</a>
+                    <span>|</span>
+                    <a href="#" onclick="showRegister()">Register New Group</a>
+                </div>
+            </div>
+
+            <!-- Admin Login Form -->
+            <div id="adminLoginForm" class="auth-form">
+                <h2>Admin Login</h2>
+                <div id="adminAlert" class="alert-container"></div>
+                
+                <form onsubmit="handleAdminLogin(event)">
+                    <div class="form-group">
+                        <label for="adminUsername">Admin Username</label>
+                        <input type="text" id="adminUsername" class="form-control" placeholder="Admin username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminPassword">Admin Password</label>
+                        <input type="password" id="adminPassword" class="form-control" placeholder="Admin password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary full-width">
+                        <span id="adminText">Admin Sign In</span>
+                        <span id="adminLoader" class="loading" style="display: none;"></span>
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    <a href="#" onclick="showLogin()">Back to User Login</a>
+                </div>
+            </div>
+
+            <!-- Group Registration Form -->
+            <div id="registerForm" class="auth-form">
+                <h2>Register New Engineering Group</h2>
+                <div id="registerAlert" class="alert-container"></div>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="form-group">
+                        <label for="groupName">Group Name *</label>
+                        <input type="text" id="groupName" class="form-control" placeholder="e.g., Delhi Network Team" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="groupId">Group ID *</label>
+                        <input type="text" id="groupId" class="form-control" placeholder="e.g., DNT001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminName">Admin Name *</label>
+                        <input type="text" id="adminName" class="form-control" placeholder="Group admin name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminEmail">Admin Email *</label>
+                        <input type="email" id="adminEmail" class="form-control" placeholder="admin@company.com" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminUserName">Admin Username *</label>
+                        <input type="text" id="adminUserName" class="form-control" placeholder="Admin login username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adminPass">Admin Password *</label>
+                        <input type="password" id="adminPass" class="form-control" placeholder="Admin password" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="groupDescription">Group Description</label>
+                        <textarea id="groupDescription" class="form-control" rows="3" placeholder="Brief description of the engineering group"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary full-width">
+                        <span id="registerText">Register Group</span>
+                        <span id="registerLoader" class="loading" style="display: none;"></span>
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    <a href="#" onclick="showLogin()">Back to Login</a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="demo-credentials">
+            <h3>Demo Credentials</h3>
+            <div class="demo-section">
+                <h4>Admin Access:</h4>
+                <p><strong>Username:</strong> admin<br><strong>Password:</strong> admin123</p>
+            </div>
+            <div class="demo-section">
+                <h4>Engineer Access (Group: Delhi Network Team):</h4>
+                <p><strong>Username:</strong> rohit.rajput<br><strong>Password:</strong> password123</p>
+                <p><strong>Username:</strong> sanjay.kumar<br><strong>Password:</strong> password123</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>
